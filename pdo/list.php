@@ -2,7 +2,13 @@
 require_once("libs/Db.php");
 $objDb = new Db();
 $db = $objDb->database;
-$query = $db->prepare("SELECT * FROM member");
+$sql = "SELECT * FROM member";
+$search = '';
+if(isset($_GET['search'])){
+  $search = $_GET['search'];
+  $sql .= " WHERE firstname LIKE '%".$search."%' OR lastname LIKE '%".$search."%'";
+}
+$query = $db->prepare($sql);
 $query->execute();
 ?>
 <!DOCTYPE html>
@@ -13,6 +19,10 @@ $query->execute();
   </head>
   <body>
     <a href="insert-form.php">เพิ่มข้อมูล</a>
+    <form class="" action="list.php" method="get">
+      <input type="text" name="search" value="<?php echo $search ?>">
+      <button type="submit">Search</button>
+    </form>
     <table border="1">
       <thead>
         <tr>
